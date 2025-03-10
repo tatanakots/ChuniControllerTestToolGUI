@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationIcon>CHUNITHM.ico</ApplicationIcon>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <Authors>Tatanako</Authors>
+	<AssemblyVersion>1.0</AssemblyVersion>
+	<VersionPrefix>1.0.0</VersionPrefix>
+    <Copyright>© $([System.DateTime]::Now.ToString("yyyy")) Tatanakots</Copyright>
+	<BuildDate>$([System.DateTime]::Now.ToString("yyyyMMddHHmmss"))</BuildDate>
+    <FileVersion>$(VersionPrefix).$(BuildDate)</FileVersion>
+    <NeutralLanguage>zh-Hans</NeutralLanguage>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>embedded</DebugType>
+    <NoWarn>1701;1702;7035</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>embedded</DebugType>
+    <NoWarn>1701;1702;7035</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="CHUNITHM.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="chuniio_affine.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

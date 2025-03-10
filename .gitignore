@@ -1,0 +1,12 @@
+.editorconfig
+.vscode
+.vs
+ChuniControllerTestToolGUI/bin
+ChuniControllerTestToolGUI/obj
+ChuniControllerTestToolGUI/chuniio_affine.dll
+Debug
+Release
+x64
+chuniio/Debug
+chuniio/Release
+chuniio/x64
