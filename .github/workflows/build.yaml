@@ -1,0 +1,50 @@
+name: Build ChuniControllerTestToolGUI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request_target:
+  workflow_dispatch:
+
+jobs:
+  build-release:
+    runs-on: windows-latest
+
+    steps:
+      # 1. Checkout 代码
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          path: ChuniControllerTestToolGUI
+      
+      - name: Checkout Chuniio
+        uses: actions/checkout@v4
+        with:
+          repository: QHPaeek/Affine_IO
+          path: Affine_IO
+
+      - name: build Chuniio
+        run: |
+          cd Affine_IO/chuniio
+          gcc -shared -o chuniio_affine.dll .\chuniio.c .\config.c .\serialslider.c -lsetupapi
+          cd ../..
+          cp Affine_IO/chuniio/chuniio_affine.dll ChuniControllerTestToolGUI/ChuniControllerTestToolGUI/chuniio_affine.dll
+
+      # 2. 安装指定版本的 .NET（此处使用 8.0.x）
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      # 3. 构建 .NET 项目（Release 模式）
+      - name: Build .NET Project
+        run: |
+          cd ChuniControllerTestToolGUI
+          dotnet build ChuniControllerTestToolGUI.sln --configuration Release
+
+      # 5. 上传构建产物
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ChuniControllerTestToolGUI
+          path: ChuniControllerTestToolGUI\bin\Release\net8.0-windows
