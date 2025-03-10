@@ -1,4 +1,4 @@
-using System.Diagnostics;
+ï»¿using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
@@ -12,9 +12,9 @@ namespace ChuniControllerTestToolGUI
         private const string DEVICE_VID = "VID_AFF1";
         private const string DEVICE_PID = "PID_52A4";
         private bool isDeviceConnected = false;
-        private Thread? readThread = null; // ÓÃÓÚºóÌ¨¶ÁÈ¡Êı¾İµÄÏß³Ì
+        private Thread? readThread = null; // ç”¨äºåå°è¯»å–æ•°æ®çš„çº¿ç¨‹
         private int THRESHOLD = 140;
-        // ¶¨Òå 93 ×Ö½ÚµÄ LED ÑÕÉ«Êı¾İ£¨´ÓÓÒÍù×ó BRG£©
+        // å®šä¹‰ 93 å­—èŠ‚çš„ LED é¢œè‰²æ•°æ®ï¼ˆä»å³å¾€å·¦ BRGï¼‰
         private byte[] rgbdata = Enumerable.Repeat((byte)0, 93).ToArray();
 
         public TestToolMainWindow()
@@ -25,19 +25,19 @@ namespace ChuniControllerTestToolGUI
             linkLabel1.Links.Add(0, 10, "https://github.com/tatanakots/ChuniControllerTestToolGUI");
         }
 
-        // »ñÈ¡Ä£¿é¾ä±ú£¨Ê¹ÓÃ ANSI ×Ö·û¼¯£©
+        // è·å–æ¨¡å—å¥æŸ„ï¼ˆä½¿ç”¨ ANSI å­—ç¬¦é›†ï¼‰
         [DllImport("kernel32.dll", CharSet = CharSet.Ansi)]
         private static extern IntPtr GetModuleHandle(string lpModuleName);
 
-        // »ñÈ¡Ä£¿éÄÚµ¼³ö·ûºÅµÄµØÖ·
+        // è·å–æ¨¡å—å†…å¯¼å‡ºç¬¦å·çš„åœ°å€
         [DllImport("kernel32.dll", CharSet = CharSet.Ansi)]
         private static extern IntPtr GetProcAddress(IntPtr hModule, string lpProcName);
 
-        // ±éÀúËùÓĞ sliderLight °´Å¥£¬²¢×¢²áÍ¬Ò»¸öµã»÷ÊÂ¼ş´¦ÀíÆ÷
+        // éå†æ‰€æœ‰ sliderLight æŒ‰é’®ï¼Œå¹¶æ³¨å†ŒåŒä¸€ä¸ªç‚¹å‡»äº‹ä»¶å¤„ç†å™¨
         private void RegisterSliderLightButtons()
         {
-            // ¼ÙÉè sliderLight1 µ½ sliderLight31 ¶¼ÔÚµ±Ç°´°ÌåÖĞ
-            // Äã¿ÉÒÔÊÖ¶¯·ÅÈëÊı×é£¬»òÕß¸ù¾İ¿Ø¼şÃû³Æ²éÕÒ
+            // å‡è®¾ sliderLight1 åˆ° sliderLight31 éƒ½åœ¨å½“å‰çª—ä½“ä¸­
+            // ä½ å¯ä»¥æ‰‹åŠ¨æ”¾å…¥æ•°ç»„ï¼Œæˆ–è€…æ ¹æ®æ§ä»¶åç§°æŸ¥æ‰¾
             Button[] sliderLights = new Button[]
             {
                 sliderLight1, sliderLight2, sliderLight3, sliderLight4, sliderLight5,
@@ -49,9 +49,9 @@ namespace ChuniControllerTestToolGUI
                 sliderLight31
             };
 
-            // ÎªÃ¿¸ö°´Å¥ÉèÖÃ Tag£¨ÀıÈç£¬Tag = 30 ¶ÔÓ¦ sliderLight1£¬Tag = 0 ¶ÔÓ¦ sliderLight31£©
-            // ÕâÀï¼ÙÉè°´Å¥Êı×éË³ĞòÊÇ sliderLight1, sliderLight2, ¡­, sliderLight31£¬
-            // ÄÇÃ´Äã¿ÉÒÔÕâÑù¸³Öµ Tag: Tag = (31 - index - 1)
+            // ä¸ºæ¯ä¸ªæŒ‰é’®è®¾ç½® Tagï¼ˆä¾‹å¦‚ï¼ŒTag = 30 å¯¹åº” sliderLight1ï¼ŒTag = 0 å¯¹åº” sliderLight31ï¼‰
+            // è¿™é‡Œå‡è®¾æŒ‰é’®æ•°ç»„é¡ºåºæ˜¯ sliderLight1, sliderLight2, â€¦, sliderLight31ï¼Œ
+            // é‚£ä¹ˆä½ å¯ä»¥è¿™æ ·èµ‹å€¼ Tag: Tag = (31 - index - 1)
             for (int i = 0; i < sliderLights.Length; i++)
             {
                 sliderLights[i].Tag = i; // Tag: 30,29,...,0
@@ -59,40 +59,40 @@ namespace ChuniControllerTestToolGUI
             }
         }
 
-        // ËùÓĞ sliderLight °´Å¥µÄµã»÷ÊÂ¼ş´¦ÀíÆ÷
+        // æ‰€æœ‰ sliderLight æŒ‰é’®çš„ç‚¹å‡»äº‹ä»¶å¤„ç†å™¨
         private void SliderLightButton_Click(object? sender, EventArgs e)
         {
             if (sender is Button btn && btn.Tag is int ledIndex)
             {
                 using (ColorDialog cd = new ColorDialog())
                 {
-                    // µ¯³öµ÷É«ÅÌ
+                    // å¼¹å‡ºè°ƒè‰²ç›˜
                     if (cd.ShowDialog() == DialogResult.OK)
                     {
                         Color chosen = cd.Color;
-                        // ½«Ñ¡ÔñµÄÑÕÉ«×ª»»Îª·ûºÏ rgbdata ¸ñÊ½µÄ×Ö½ÚÊı¾İ£¨BRGË³Ğò£©
-                        // Color µÄÊôĞÔË³ĞòÎª R, G, B
+                        // å°†é€‰æ‹©çš„é¢œè‰²è½¬æ¢ä¸ºç¬¦åˆ rgbdata æ ¼å¼çš„å­—èŠ‚æ•°æ®ï¼ˆBRGé¡ºåºï¼‰
+                        // Color çš„å±æ€§é¡ºåºä¸º R, G, B
                         byte blue = chosen.B;
                         byte red = chosen.R;
                         byte green = chosen.G;
 
-                        // ¸ù¾İÓ³Éä¹ØÏµ£¬¼ÆËã¸Ã LED ÔÚ rgbdata Êı×éÖĞµÄÆ«ÒÆ
-                        // ¼ÙÉè rgbdata ÖĞ LED Êı¾İ´ÓÓÒÍù×óÅÅÁĞ£¬
-                        // ÇÒÃ¿¸ö LED Õ¼ 3 ×Ö½Ú£¬×îÓÒ±ßµÄ LED ¶ÔÓ¦ sliderLight1£¬Æä Tag Îª 30
-                        // ¶ÔÓ¦ rgbdata µÄ LED index = ledIndex£¬¼´Æ«ÒÆ = ledIndex * 3£¬
-                        // µ«ÓÉÓÚÎÒÃÇÖ®Ç°¶¨Òå Tag = (31 - index - 1)£¬´ËÊ±Ö±½ÓÊ¹ÓÃ ledIndex ¼´¿É
-                        // Èç¹ûÄãÏë¸üÖ±¹Û£¬Ò²¿ÉÒÔÏÈ¼ÆËãÂß¼­ LED ±àºÅ£º
-                        int offset = ledIndex * 3;  // LED Õ¼3×Ö½Ú
+                        // æ ¹æ®æ˜ å°„å…³ç³»ï¼Œè®¡ç®—è¯¥ LED åœ¨ rgbdata æ•°ç»„ä¸­çš„åç§»
+                        // å‡è®¾ rgbdata ä¸­ LED æ•°æ®ä»å³å¾€å·¦æ’åˆ—ï¼Œ
+                        // ä¸”æ¯ä¸ª LED å  3 å­—èŠ‚ï¼Œæœ€å³è¾¹çš„ LED å¯¹åº” sliderLight1ï¼Œå…¶ Tag ä¸º 30
+                        // å¯¹åº” rgbdata çš„ LED index = ledIndexï¼Œå³åç§» = ledIndex * 3ï¼Œ
+                        // ä½†ç”±äºæˆ‘ä»¬ä¹‹å‰å®šä¹‰ Tag = (31 - index - 1)ï¼Œæ­¤æ—¶ç›´æ¥ä½¿ç”¨ ledIndex å³å¯
+                        // å¦‚æœä½ æƒ³æ›´ç›´è§‚ï¼Œä¹Ÿå¯ä»¥å…ˆè®¡ç®—é€»è¾‘ LED ç¼–å·ï¼š
+                        int offset = ledIndex * 3;  // LED å 3å­—èŠ‚
 
-                        // °´ÕÕÊı×éÔ­ÓĞµÄ¸ñÊ½£ºË³ĞòÎª BRG
+                        // æŒ‰ç…§æ•°ç»„åŸæœ‰çš„æ ¼å¼ï¼šé¡ºåºä¸º BRG
                         rgbdata[offset] = blue;
                         rgbdata[offset + 1] = red;
                         rgbdata[offset + 2] = green;
 
-                        // ¸üĞÂ¸Ã°´Å¥µÄ±³¾°ÑÕÉ«£¬ÒÔ±ãÖ±¹ÛÏÔÊ¾Ñ¡ÔñµÄÑÕÉ«
+                        // æ›´æ–°è¯¥æŒ‰é’®çš„èƒŒæ™¯é¢œè‰²ï¼Œä»¥ä¾¿ç›´è§‚æ˜¾ç¤ºé€‰æ‹©çš„é¢œè‰²
                         btn.BackColor = chosen;
 
-                        // Èç¹ûĞèÒªµÄ»°£¬Ò²¿ÉÒÔµ÷ÓÃ UpdateSliderLights() À´Ë¢ĞÂËùÓĞ LED ÏÔÊ¾
+                        // å¦‚æœéœ€è¦çš„è¯ï¼Œä¹Ÿå¯ä»¥è°ƒç”¨ UpdateSliderLights() æ¥åˆ·æ–°æ‰€æœ‰ LED æ˜¾ç¤º
                         // UpdateSliderLights();
                     }
                 }
@@ -101,69 +101,69 @@ namespace ChuniControllerTestToolGUI
 
         private void AutoConnectButton_Click(object sender, EventArgs e)
         {
-            // µ÷ÓÃ DLL º¯Êı£¬»ñÈ¡´®¿ÚÃû³ÆµÄÖ¸Õë
+            // è°ƒç”¨ DLL å‡½æ•°ï¼Œè·å–ä¸²å£åç§°çš„æŒ‡é’ˆ
             IntPtr ptr = Chuniio.GetSerialPortByVidPid(DEVICE_VID, DEVICE_PID);
-            // ½«Ö¸Õë×ª»»Îª ANSI ×Ö·û´®
+            // å°†æŒ‡é’ˆè½¬æ¢ä¸º ANSI å­—ç¬¦ä¸²
             string? portString = Marshal.PtrToStringAnsi(ptr);
 
-            // ¼ÙÉè·µ»ØµÄ´®¿ÚÃû³ÆÖÁÉÙ6¸ö×Ö·û
+            // å‡è®¾è¿”å›çš„ä¸²å£åç§°è‡³å°‘6ä¸ªå­—ç¬¦
             string? comPort = portString;
 
-            // Èç¹ûÊ××Ö½ÚÎª 0x48£¨ASCII 'H'£©£¬ÔòÊ¹ÓÃÄ¬ÈÏ´®¿Ú "COM1"
+            // å¦‚æœé¦–å­—èŠ‚ä¸º 0x48ï¼ˆASCII 'H'ï¼‰ï¼Œåˆ™ä½¿ç”¨é»˜è®¤ä¸²å£ "COM1"
             if ((!string.IsNullOrEmpty(comPort) && comPort[0] == (char)0x48) || string.IsNullOrEmpty(comPort))
             {
-                if (MessageBox.Show("ÎŞ·¨×Ô¶¯»ñÈ¡Éè±¸´®¿ÚºÅ£¬Çë¼ì²éÄúµÄÉè±¸ÊÇ·ñÕıÈ·Á¬½Ó»òÊÇ·ñÊ¹ÓÃÁË×Ô¶¨ÒåµÄVIDºÍPID£¬½«³¢ÊÔÊ¹ÓÃÄ¬ÈÏ´®¿ÚCOM1½øĞĞÁ¬½Ó£¡", "¾¯¸æ", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.Cancel)
+                if (MessageBox.Show("æ— æ³•è‡ªåŠ¨è·å–è®¾å¤‡ä¸²å£å·ï¼Œè¯·æ£€æŸ¥æ‚¨çš„è®¾å¤‡æ˜¯å¦æ­£ç¡®è¿æ¥æˆ–æ˜¯å¦ä½¿ç”¨äº†è‡ªå®šä¹‰çš„VIDå’ŒPIDï¼Œå°†å°è¯•ä½¿ç”¨é»˜è®¤ä¸²å£COM1è¿›è¡Œè¿æ¥ï¼", "è­¦å‘Š", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.Cancel)
                 {
                     return;
                 }
                 comPort = "COM1";
             }
 
-            // ¿É½«×îÖÕµÄ´®¿ÚÃû³ÆÏÔÊ¾µ½½çÃæÉÏ£¬»ò¼ÇÂ¼µ½±äÁ¿ÖĞ
-            //MessageBox.Show("Ê¹ÓÃµÄ´®¿Ú£º" + comPort);
+            // å¯å°†æœ€ç»ˆçš„ä¸²å£åç§°æ˜¾ç¤ºåˆ°ç•Œé¢ä¸Šï¼Œæˆ–è®°å½•åˆ°å˜é‡ä¸­
+            //MessageBox.Show("ä½¿ç”¨çš„ä¸²å£ï¼š" + comPort);
             ConnectedPortLabel.Text = comPort;
 
-            // »ñÈ¡ DLL Ä£¿é¾ä±ú
+            // è·å– DLL æ¨¡å—å¥æŸ„
             IntPtr hModule = GetModuleHandle("chuniio_affine.dll");
             if (hModule == IntPtr.Zero)
             {
-                MessageBox.Show("ÎŞ·¨»ñÈ¡ chuniio DLL Ä£¿é¾ä±ú£¡", "´íÎó", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("æ— æ³•è·å– chuniio DLL æ¨¡å—å¥æŸ„ï¼", "é”™è¯¯", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            // »ñÈ¡È«¾Ö±äÁ¿ comPort µÄµØÖ·£¨×¢Òâ·ûºÅÃû³ÆÇø·Ö´óĞ¡Ğ´£©
+            // è·å–å…¨å±€å˜é‡ comPort çš„åœ°å€ï¼ˆæ³¨æ„ç¬¦å·åç§°åŒºåˆ†å¤§å°å†™ï¼‰
             IntPtr comPortAddr = GetProcAddress(hModule, "comPort");
             if (comPortAddr == IntPtr.Zero)
             {
-                MessageBox.Show("ÎŞ·¨»ñÈ¡ chuniio È«¾Ö±äÁ¿ comPort µÄµØÖ·£¡", "´íÎó", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("æ— æ³•è·å– chuniio å…¨å±€å˜é‡ comPort çš„åœ°å€ï¼", "é”™è¯¯", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            // ½« comPortValue ×ª»»Îª ANSI ×Ö½ÚÊı×é
-            // ¸ù¾İÔ­´úÂë£¬C ÖĞ comPort ¶¨ÒåÎª char comPort[13]£¬µ«ÔÚ open_port() µ÷ÓÃÖĞÖ»¸´ÖÆÇ°6¸ö×Ö½Ú
+            // å°† comPortValue è½¬æ¢ä¸º ANSI å­—èŠ‚æ•°ç»„
+            // æ ¹æ®åŸä»£ç ï¼ŒC ä¸­ comPort å®šä¹‰ä¸º char comPort[13]ï¼Œä½†åœ¨ open_port() è°ƒç”¨ä¸­åªå¤åˆ¶å‰6ä¸ªå­—èŠ‚
             byte[] comPortBytes = new byte[6];
             byte[] tempBytes = Encoding.ASCII.GetBytes(comPort);
             int copyLen = Math.Min(tempBytes.Length, 6);
             Array.Copy(tempBytes, comPortBytes, copyLen);
-            // Ê£Óà×Ö½ÚÈç¹û²»×ã6¸öÔò±£³ÖÎª0
+            // å‰©ä½™å­—èŠ‚å¦‚æœä¸è¶³6ä¸ªåˆ™ä¿æŒä¸º0
 
-            // ½«×Ö½ÚÊı×éĞ´Èë DLL ÄÚ²¿µÄÈ«¾Ö±äÁ¿ comPort µÄÄÚ´æÇøÓò
+            // å°†å­—èŠ‚æ•°ç»„å†™å…¥ DLL å†…éƒ¨çš„å…¨å±€å˜é‡ comPort çš„å†…å­˜åŒºåŸŸ
             Marshal.Copy(comPortBytes, 0, comPortAddr, 6);
 
-            // µ÷ÓÃ open_port() ´ò¿ª´®¿ÚÉè±¸
+            // è°ƒç”¨ open_port() æ‰“å¼€ä¸²å£è®¾å¤‡
             bool openSuccess = Chuniio.open_port();
             if (!openSuccess)
             {
-                MessageBox.Show("Éè±¸Á¬½ÓÊ§°Ü£¡", "´íÎó", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("è®¾å¤‡è¿æ¥å¤±è´¥ï¼", "é”™è¯¯", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 DisconnectButton_Click(this, EventArgs.Empty);
             }
             else
             {
-                //MessageBox.Show("´®¿ÚÒÑ´ò¿ª£¡");
+                //MessageBox.Show("ä¸²å£å·²æ‰“å¼€ï¼");
                 AutoConnectButton.Enabled = false;
                 DisconnectButton.Enabled = true;
                 isDeviceConnected = true;
-                // ¿ªÆôºóÌ¨Ïß³ÌÑ­»·²éÑ¯Éè±¸×´Ì¬
+                // å¼€å¯åå°çº¿ç¨‹å¾ªç¯æŸ¥è¯¢è®¾å¤‡çŠ¶æ€
                 readThread = new Thread(ReadDeviceLoop);
                 readThread.IsBackground = true;
                 readThread.Start();
@@ -176,7 +176,7 @@ namespace ChuniControllerTestToolGUI
             {
                 data = new int[2, 16];
             }
-            // ¶¨ÒåÆæÊıºÍÅ¼ÊıµÄ Label ¿Ø¼şÊı×é
+            // å®šä¹‰å¥‡æ•°å’Œå¶æ•°çš„ Label æ§ä»¶æ•°ç»„
             Button[] oddLabels = new Button[]
             {
                 sliderInfo31, sliderInfo29, sliderInfo27, sliderInfo25,
@@ -193,22 +193,22 @@ namespace ChuniControllerTestToolGUI
                 sliderInfo8,  sliderInfo6,  sliderInfo4,  sliderInfo2
             };
 
-            // Ñ­»·¸³Öµ£ºÊı×é data Îª 2ĞĞ16ÁĞ£¬data[0,i] ¶ÔÓ¦ÆæÊı±êÇ©£¨31,29,...,1£©£¬data[1,i] ¶ÔÓ¦Å¼Êı±êÇ©£¨32,30,...,2£©
+            // å¾ªç¯èµ‹å€¼ï¼šæ•°ç»„ data ä¸º 2è¡Œ16åˆ—ï¼Œdata[0,i] å¯¹åº”å¥‡æ•°æ ‡ç­¾ï¼ˆ31,29,...,1ï¼‰ï¼Œdata[1,i] å¯¹åº”å¶æ•°æ ‡ç­¾ï¼ˆ32,30,...,2ï¼‰
             for (int i = 0; i < 16; i++)
             {
-                // ÆæÊı±êÇ©£ºÀıÈç sliderInfo31, sliderInfo29, ...
+                // å¥‡æ•°æ ‡ç­¾ï¼šä¾‹å¦‚ sliderInfo31, sliderInfo29, ...
                 oddLabels[i].Text = $"{data[0, i]}";
                 oddLabels[i].BackColor = data[0, i] >= THRESHOLD ? Color.Pink : Color.White;
 
-                // Å¼Êı±êÇ©£ºÀıÈç sliderInfo32, sliderInfo30, ...
+                // å¶æ•°æ ‡ç­¾ï¼šä¾‹å¦‚ sliderInfo32, sliderInfo30, ...
                 evenLabels[i].Text = $"{data[1, i]}";
                 evenLabels[i].BackColor = data[1, i] >= THRESHOLD ? Color.Pink : Color.White;
             }
 
-            // ½« airdata ×ª»»Îª 6 Î»¶ş½øÖÆ×Ö·û´®£¨×ó²àÎª×î¸ßÎ»£©
+            // å°† airdata è½¬æ¢ä¸º 6 ä½äºŒè¿›åˆ¶å­—ç¬¦ä¸²ï¼ˆå·¦ä¾§ä¸ºæœ€é«˜ä½ï¼‰
             string binaryAir = Convert.ToString(airdata, 2).PadLeft(6, '0');
 
-            // Èç¹ûÄãÒÑ¾­ÔÚ´°ÌåÉÏ·ÅÖÃÁË airInfo1 µ½ airInfo6 µÄ Label ¿Ø¼ş£¬¿ÉÒÔ½«ËüÃÇ·ÅÈëÊı×é
+            // å¦‚æœä½ å·²ç»åœ¨çª—ä½“ä¸Šæ”¾ç½®äº† airInfo1 åˆ° airInfo6 çš„ Label æ§ä»¶ï¼Œå¯ä»¥å°†å®ƒä»¬æ”¾å…¥æ•°ç»„
             Button[] airInfoLabels = new Button[]
             {
                 airInfo1, airInfo2, airInfo3, airInfo4, airInfo5, airInfo6
@@ -216,14 +216,14 @@ namespace ChuniControllerTestToolGUI
 
             for (int i = 0; i < 6; i++)
             {
-                // »ñÈ¡µ±Ç°Î»×Ö·û
+                // è·å–å½“å‰ä½å­—ç¬¦
                 char bit = binaryAir[5 - i];
                 airInfoLabels[i].Text = bit.ToString();
                 airInfoLabels[i].BackColor = (bit == '1') ? Color.Pink : Color.White;
             }
 
-            // ½« 31 ¸ö¿Ø¼ş·ÅÈëÊı×é£¬È·±£Êı×éË³ĞòÓë UI ÉÏÏÔÊ¾µÄ±àºÅÒ»ÖÂ£º
-            // sliderLight1 ¶ÔÓ¦ 1 ºÅLED£¬sliderLight31 ¶ÔÓ¦ 31 ºÅLED
+            // å°† 31 ä¸ªæ§ä»¶æ”¾å…¥æ•°ç»„ï¼Œç¡®ä¿æ•°ç»„é¡ºåºä¸ UI ä¸Šæ˜¾ç¤ºçš„ç¼–å·ä¸€è‡´ï¼š
+            // sliderLight1 å¯¹åº” 1 å·LEDï¼ŒsliderLight31 å¯¹åº” 31 å·LED
             Button[] sliderLights = new Button[]
             {
                 sliderLight1, sliderLight2, sliderLight3, sliderLight4, sliderLight5,
@@ -235,17 +235,17 @@ namespace ChuniControllerTestToolGUI
                 sliderLight31
             };
 
-            // ÓÉÓÚÊı×é rgbdata ¹²93×Ö½Ú£¬Ã¿¸öLEDÕ¼3×Ö½Ú£¬¹²31¸öLED
-            // Êı×éÊÇ¡°´ÓÓÒÍù×ó¡±ÅÅÁĞ£¬ËùÒÔ sliderLight1 ¶ÔÓ¦µÄ LEDÊı¾İÔÚ rgbdata µÄ×îºó3×Ö½Ú
+            // ç”±äºæ•°ç»„ rgbdata å…±93å­—èŠ‚ï¼Œæ¯ä¸ªLEDå 3å­—èŠ‚ï¼Œå…±31ä¸ªLED
+            // æ•°ç»„æ˜¯â€œä»å³å¾€å·¦â€æ’åˆ—ï¼Œæ‰€ä»¥ sliderLight1 å¯¹åº”çš„ LEDæ•°æ®åœ¨ rgbdata çš„æœ€å3å­—èŠ‚
             for (int i = 0; i < 31; i++)
             {
-                // ¼ÆËãÊı¾İÔÚ rgbdata ÖĞµÄÆ«ÒÆ£ºsliderLight1 ¶ÔÓ¦Ë÷Òı 30£¬sliderLight2 ¶ÔÓ¦Ë÷Òı 29£¬ÒÔ´ËÀàÍÆ
+                // è®¡ç®—æ•°æ®åœ¨ rgbdata ä¸­çš„åç§»ï¼šsliderLight1 å¯¹åº”ç´¢å¼• 30ï¼ŒsliderLight2 å¯¹åº”ç´¢å¼• 29ï¼Œä»¥æ­¤ç±»æ¨
                 int offset = i * 3;
-                // °´ BRG Ë³ĞòÈ¡³öÑÕÉ«·ÖÁ¿
+                // æŒ‰ BRG é¡ºåºå–å‡ºé¢œè‰²åˆ†é‡
                 byte blue = rgbdata[offset];
                 byte red = rgbdata[offset + 1];
                 byte green = rgbdata[offset + 2];
-                // ¹¹ÔìÑÕÉ«£¨Color.FromArgb µÄ²ÎÊıË³ĞòÎª R, G, B£©
+                // æ„é€ é¢œè‰²ï¼ˆColor.FromArgb çš„å‚æ•°é¡ºåºä¸º R, G, Bï¼‰
                 Color color = Color.FromArgb(red, green, blue);
                 sliderLights[i].BackColor = color;
             }
@@ -253,19 +253,19 @@ namespace ChuniControllerTestToolGUI
 
         private unsafe void ReadDeviceLoop()
         {
-            // Æô¶¯É¨ÃèÃüÁî
+            // å¯åŠ¨æ‰«æå‘½ä»¤
             Chuniio.slider_start_air_scan();
             Chuniio.slider_start_scan();
 
-            // ³õÊ¼»¯ data Êı×é£º2ĞĞ16ÁĞ
+            // åˆå§‹åŒ– data æ•°ç»„ï¼š2è¡Œ16åˆ—
             int[,] data = new int[2, 16];
             int airdata = 0;
 
 
 
-            // ·¢ËÍ LED Êı¾İÒ»´Î
+            // å‘é€ LED æ•°æ®ä¸€æ¬¡
             Chuniio.slider_send_leds(rgbdata);
-            // ³õÊ¼»¯ response
+            // åˆå§‹åŒ– response
             slider_packet_t response = new slider_packet_t();
             Chuniio.package_init(ref response);
 
@@ -285,19 +285,19 @@ namespace ChuniControllerTestToolGUI
                         //    rgb[j] = response.leds[j];
                         //}
                         airdata = response.air_status;
-                        // ÖØÖÃ response Êı¾İ
+                        // é‡ç½® response æ•°æ®
                         Chuniio.package_init(ref response);
                         this.BeginInvoke(new Action(() =>
                         {
-                            // ¸üĞÂUI
+                            // æ›´æ–°UI
                             UpdateUIDisplay(data, airdata);
                         }));
                         break;
                     case (byte)SliderCmd.SLIDER_CMD_AUTO_AIR:
                         Chuniio.package_init(ref response);
                         break;
-                    case 0xff: // 0xff ±íÊ¾´íÎó£¨Á¬½ÓÊ§°Ü£©
-                        // TODO: ´íÎó´¦Àí
+                    case 0xff: // 0xff è¡¨ç¤ºé”™è¯¯ï¼ˆè¿æ¥å¤±è´¥ï¼‰
+                        // TODO: é”™è¯¯å¤„ç†
                         break;
                     default:
                         break;
@@ -312,13 +312,13 @@ namespace ChuniControllerTestToolGUI
             isDeviceConnected = false;
             if (readThread != null && readThread.IsAlive)
             {
-                // µÈ´ıÏß³Ì½áÊø£¬×î¶àµÈ´ı1Ãë
+                // ç­‰å¾…çº¿ç¨‹ç»“æŸï¼Œæœ€å¤šç­‰å¾…1ç§’
                 readThread.Join(1000);
             }
             Chuniio.close_port();
             AutoConnectButton.Enabled = true;
             DisconnectButton.Enabled = false;
-            ConnectedPortLabel.Text = "Î´Á¬½Ó";
+            ConnectedPortLabel.Text = "æœªè¿æ¥";
         }
 
         private void ApplyThresButton_Click(object sender, EventArgs e)
@@ -333,18 +333,18 @@ namespace ChuniControllerTestToolGUI
 
         private void AboutButton_Click(object sender, EventArgs e)
         {
-            // »ñÈ¡µ±Ç°ÕıÔÚÖ´ĞĞµÄ³ÌĞò¼¯
+            // è·å–å½“å‰æ­£åœ¨æ‰§è¡Œçš„ç¨‹åºé›†
             Assembly assembly = Assembly.GetExecutingAssembly();
-            // Í¨¹ı³ÌĞò¼¯Î»ÖÃ»ñÈ¡ÎÄ¼ş°æ±¾ĞÅÏ¢
+            // é€šè¿‡ç¨‹åºé›†ä½ç½®è·å–æ–‡ä»¶ç‰ˆæœ¬ä¿¡æ¯
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
             ushort chuniioapiVersion = Chuniio.chuni_io_get_api_version();
             string chuniioVersion = "0x" + chuniioapiVersion.ToString("X4");
-            MessageBox.Show($"ÖĞ¶ş½Ú×à¿ØÖÆÆ÷²âÊÔ¹¤¾ß£¨Í¼ĞÎ½çÃæ°æ£©\n\n³ÌĞò°æ±¾£ºVer. {fvi.FileVersion}\nChuniio°æ±¾£º{chuniioVersion}\n\nÈí¼ş×÷Õß£ºTatanako\nÓ²¼ş×÷Õß£ºQinh\nÌØ±ğÃùĞ»£ºSoda£¨ÎÒµÄÓ²¼şÉú²úÉÌ£©\n\n±¾Èí¼ş»ùÓÚ\nhttps://github.com/QHPaeek/Affine_IO/blob/master/chuniio/test.c\n±àĞ´Íê³É£¬¸ĞĞ»Qinh¿ªÔ´~\n\n±¾Èí¼şÍêÈ«Ãâ·Ñ£¬´úÂë¿ªÔ´ÓÚGitHub£º\nhttps://github.com/tatanakots/ChuniControllerTestToolGUI", "¹ØÓÚ±¾Èí¼ş", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show($"ä¸­äºŒèŠ‚å¥æ§åˆ¶å™¨æµ‹è¯•å·¥å…·ï¼ˆå›¾å½¢ç•Œé¢ç‰ˆï¼‰\n\nç¨‹åºç‰ˆæœ¬ï¼šVer. {fvi.FileVersion}\nChuniioç‰ˆæœ¬ï¼š{chuniioVersion}\n\nè½¯ä»¶ä½œè€…ï¼šTatanako\nç¡¬ä»¶ä½œè€…ï¼šQinh\nç‰¹åˆ«é¸£è°¢ï¼šSodaï¼ˆæˆ‘çš„ç¡¬ä»¶ç”Ÿäº§å•†ï¼‰\n\næœ¬è½¯ä»¶åŸºäº\nhttps://github.com/QHPaeek/Affine_IO/blob/master/chuniio/test.c\nç¼–å†™å®Œæˆï¼Œæ„Ÿè°¢Qinhå¼€æº~\n\næœ¬è½¯ä»¶å®Œå…¨å…è´¹ï¼Œä»£ç å¼€æºäºGitHubï¼š\nhttps://github.com/tatanakots/ChuniControllerTestToolGUI", "å…³äºæœ¬è½¯ä»¶", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            // »ñÈ¡Á´½ÓÊı¾İ£¬ÕâÀïÊÇ URL ×Ö·û´®
+            // è·å–é“¾æ¥æ•°æ®ï¼Œè¿™é‡Œæ˜¯ URL å­—ç¬¦ä¸²
             string url = e!.Link!.LinkData!.ToString() == null ? e!.Link!.LinkData!.ToString()! : "https://github.com/tatanakots/ChuniControllerTestToolGUI";
             var processStartInfo = new ProcessStartInfo
             {
