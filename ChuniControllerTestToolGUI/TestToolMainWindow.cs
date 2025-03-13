@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
+using System.Windows.Forms;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ChuniControllerTestToolGUI
@@ -14,8 +15,12 @@ namespace ChuniControllerTestToolGUI
         private bool isDeviceConnected = false;
         private Thread? readThread = null; // 用于后台读取数据的线程
         private int THRESHOLD = 140;
+        private bool isTouchChangeColor = false;
         // 定义 93 字节的 LED 颜色数据（从右往左 BRG）
         private byte[] rgbdata = Enumerable.Repeat((byte)0, 93).ToArray();
+        private byte[] rgbdatabackup = Enumerable.Repeat((byte)0, 93).ToArray();
+        private byte[] touchedColor = Enumerable.Repeat((byte)255, 3).ToArray();
+        bool[] hasBackup = new bool[16];  // 每个色块是否已备份
 
         public TestToolMainWindow()
         {
@@ -91,9 +96,6 @@ namespace ChuniControllerTestToolGUI
 
                         // 更新该按钮的背景颜色，以便直观显示选择的颜色
                         btn.BackColor = chosen;
-
-                        // 如果需要的话，也可以调用 UpdateSliderLights() 来刷新所有 LED 显示
-                        // UpdateSliderLights();
                     }
                 }
             }
@@ -203,6 +205,35 @@ namespace ChuniControllerTestToolGUI
                 // 偶数标签：例如 sliderInfo32, sliderInfo30, ...
                 evenLabels[i].Text = $"{data[1, i]}";
                 evenLabels[i].BackColor = data[1, i] >= THRESHOLD ? Color.Pink : Color.White;
+
+                int offset = (15 - i) * 2;  // 根据原代码计算出色块在 rgbdata 中的位置
+
+                // 当任一数据满足阈值时且触摸改变颜色的标志为 true
+                if ((data[0, i] >= THRESHOLD || data[1, i] >= THRESHOLD) && isTouchChangeColor)
+                {
+                    // 如果该色块还未备份，则备份一次
+                    if (!hasBackup[i])
+                    {
+                        for (int j = 0; j < 3; j++)
+                        {
+                            rgbdatabackup[(offset * 3) + j] = rgbdata[(offset * 3) + j];
+                        }
+                        hasBackup[i] = true;
+                    }
+                    for (int j = 0;j < 3; j++)
+                    {
+                        rgbdata[(offset * 3) + j] = touchedColor[j];
+                    }
+                }
+                // 当数据不满足阈值时，并且该色块之前曾备份过颜色
+                else if (isTouchChangeColor && hasBackup[i])
+                {
+                    for (int j = 0; j < 3; j++)
+                    {
+                        rgbdata[(offset * 3) + j] = rgbdatabackup[(offset * 3) + j];
+                    }
+                    hasBackup[i] = false;  // 清除备份标记
+                }
             }
 
             // 将 airdata 转换为 6 位二进制字符串（左侧为最高位）
@@ -249,6 +280,11 @@ namespace ChuniControllerTestToolGUI
                 Color color = Color.FromArgb(red, green, blue);
                 sliderLights[i].BackColor = color;
             }
+            byte touchedblue = touchedColor[0];
+            byte touchedred = touchedColor[1];
+            byte touchedgreen = touchedColor[2];
+            Color touchedcolor = Color.FromArgb(touchedred, touchedgreen, touchedblue);
+            TouchedColorButton.BackColor = touchedcolor;
         }
 
         private unsafe void ReadDeviceLoop()
@@ -352,6 +388,60 @@ namespace ChuniControllerTestToolGUI
                 UseShellExecute = true
             };
             Process.Start(processStartInfo);
+        }
+
+        private void changeGroundLEDButton_Click(object sender, EventArgs e)
+        {
+            using (ColorDialog cd = new ColorDialog())
+            {
+                // 弹出调色盘
+                if (cd.ShowDialog() == DialogResult.OK)
+                {
+                    Color chosen = cd.Color;
+                    // 将选择的颜色转换为符合 rgbdata 格式的字节数据（BRG顺序）
+                    // Color 的属性顺序为 R, G, B
+                    byte blue = chosen.B;
+                    byte red = chosen.R;
+                    byte green = chosen.G;
+
+                    rgbdata = Enumerable.Repeat(new byte[] { blue, red, green }, 31)
+                             .SelectMany(x => x)
+                             .ToArray();
+                    rgbdatabackup = Enumerable.Repeat(new byte[] { blue, red, green }, 31)
+                             .SelectMany(x => x)
+                             .ToArray();
+                }
+            }
+        }
+
+        private void isTouchChangeColorCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            isTouchChangeColor = isTouchChangeColorCheckBox.Checked;
+        }
+
+        private void TouchedColorButton_Click(object sender, EventArgs e)
+        {
+            using (ColorDialog cd = new ColorDialog())
+            {
+                // 弹出调色盘
+                if (cd.ShowDialog() == DialogResult.OK)
+                {
+                    Color chosen = cd.Color;
+                    // 将选择的颜色转换为符合 rgbdata 格式的字节数据（BRG顺序）
+                    // Color 的属性顺序为 R, G, B
+                    byte blue = chosen.B;
+                    byte red = chosen.R;
+                    byte green = chosen.G;
+
+                    // 按照数组原有的格式：顺序为 BRG
+                    touchedColor[0] = blue;
+                    touchedColor[1] = red;
+                    touchedColor[2] = green;
+
+                    // 更新该按钮的背景颜色，以便直观显示选择的颜色
+                    TouchedColorButton.BackColor = chosen;
+                }
+            }
         }
     }
 }

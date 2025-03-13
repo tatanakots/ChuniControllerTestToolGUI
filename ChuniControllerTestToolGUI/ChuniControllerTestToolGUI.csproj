@@ -9,8 +9,8 @@
     <ApplicationIcon>CHUNITHM.ico</ApplicationIcon>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <Authors>Tatanako</Authors>
-	<AssemblyVersion>1.0</AssemblyVersion>
-	<VersionPrefix>1.0.0</VersionPrefix>
+	<AssemblyVersion>1.1</AssemblyVersion>
+	<VersionPrefix>1.1.0</VersionPrefix>
     <Copyright>© $([System.DateTime]::Now.ToString("yyyy")) Tatanakots</Copyright>
 	<BuildDate>$([System.DateTime]::Now.ToString("yyyyMMddHHmmss"))</BuildDate>
     <FileVersion>$(VersionPrefix).$(BuildDate)</FileVersion>

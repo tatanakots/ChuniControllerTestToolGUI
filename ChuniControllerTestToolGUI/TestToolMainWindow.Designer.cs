@@ -35,6 +35,9 @@
             ConnectedPortLabel = new Label();
             DisconnectButton = new Button();
             groupBox1 = new GroupBox();
+            TouchedColorButton = new Button();
+            isTouchChangeColorCheckBox = new CheckBox();
+            changeGroundLEDButton = new Button();
             ApplyThresButton = new Button();
             ThresNumericUpDown = new NumericUpDown();
             label2 = new Label();
@@ -175,6 +178,9 @@
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(TouchedColorButton);
+            groupBox1.Controls.Add(isTouchChangeColorCheckBox);
+            groupBox1.Controls.Add(changeGroundLEDButton);
             groupBox1.Controls.Add(ApplyThresButton);
             groupBox1.Controls.Add(ThresNumericUpDown);
             groupBox1.Controls.Add(label2);
@@ -217,6 +223,36 @@
             groupBox1.TabIndex = 4;
             groupBox1.TabStop = false;
             groupBox1.Text = "地键触摸板 (16*2)";
+            // 
+            // TouchedColorButton
+            // 
+            TouchedColorButton.Location = new Point(651, 39);
+            TouchedColorButton.Name = "TouchedColorButton";
+            TouchedColorButton.Size = new Size(75, 23);
+            TouchedColorButton.TabIndex = 84;
+            TouchedColorButton.UseVisualStyleBackColor = true;
+            TouchedColorButton.Click += TouchedColorButton_Click;
+            // 
+            // isTouchChangeColorCheckBox
+            // 
+            isTouchChangeColorCheckBox.AutoSize = true;
+            isTouchChangeColorCheckBox.Location = new Point(463, 41);
+            isTouchChangeColorCheckBox.Name = "isTouchChangeColorCheckBox";
+            isTouchChangeColorCheckBox.Size = new Size(195, 21);
+            isTouchChangeColorCheckBox.TabIndex = 83;
+            isTouchChangeColorCheckBox.Text = "将触摸后的按键设置为该颜色：";
+            isTouchChangeColorCheckBox.UseVisualStyleBackColor = true;
+            isTouchChangeColorCheckBox.CheckedChanged += isTouchChangeColorCheckBox_CheckedChanged;
+            // 
+            // changeGroundLEDButton
+            // 
+            changeGroundLEDButton.Location = new Point(305, 39);
+            changeGroundLEDButton.Name = "changeGroundLEDButton";
+            changeGroundLEDButton.Size = new Size(141, 23);
+            changeGroundLEDButton.TabIndex = 82;
+            changeGroundLEDButton.Text = "更改全部地键灯光";
+            changeGroundLEDButton.UseVisualStyleBackColor = true;
+            changeGroundLEDButton.Click += changeGroundLEDButton_Click;
             // 
             // ApplyThresButton
             // 
@@ -1132,5 +1168,8 @@
         private Button AboutButton;
         private Label label3;
         private LinkLabel linkLabel1;
+        private Button changeGroundLEDButton;
+        private CheckBox isTouchChangeColorCheckBox;
+        private Button TouchedColorButton;
     }
 }
