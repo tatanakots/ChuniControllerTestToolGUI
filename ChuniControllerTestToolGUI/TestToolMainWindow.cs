@@ -18,15 +18,19 @@ namespace ChuniControllerTestToolGUI
         private bool isTouchChangeColor = false;
         // 定义 93 字节的 LED 颜色数据（从右往左 BRG）
         private byte[] rgbdata = Enumerable.Repeat((byte)0, 93).ToArray();
+        // private byte[] rgbdata_air = Enumerable.Repeat((byte)0, 3).ToArray();
+        private byte[] rgbdata_air = [0,0,0]; // brg
         private byte[] rgbdatabackup = Enumerable.Repeat((byte)0, 93).ToArray();
         private byte[] touchedColor = Enumerable.Repeat((byte)255, 3).ToArray();
         bool[] hasBackup = new bool[16];  // 每个色块是否已备份
+        bool airLedNeedUpdate = true;
 
         public TestToolMainWindow()
         {
             InitializeComponent();
             UpdateUIDisplay(null, 0);
             RegisterSliderLightButtons();
+            RegisterAirLightButtons();
             linkLabel1.Links.Add(0, 10, "https://github.com/tatanakots/ChuniControllerTestToolGUI");
         }
 
@@ -101,6 +105,68 @@ namespace ChuniControllerTestToolGUI
             }
         }
 
+        private void RegisterAirLightButtons()
+        {
+            // 假设 sliderLight1 到 sliderLight31 都在当前窗体中
+            // 你可以手动放入数组，或者根据控件名称查找
+            Button[] airLights = new Button[]
+            {
+                airLight1, airLight2, airLight3, airLight4, airLight5, airLight6,
+                airLight7, airLight8, airLight9, airLight10, airLight11, airLight12
+            };
+
+            // 为每个按钮设置 Tag（例如，Tag = 30 对应 sliderLight1，Tag = 0 对应 sliderLight31）
+            // 这里假设按钮数组顺序是 sliderLight1, sliderLight2, …, sliderLight31，
+            // 那么你可以这样赋值 Tag: Tag = (31 - index - 1)
+            for (int i = 0; i < airLights.Length; i++)
+            {
+                airLights[i].Tag = i; // Tag: 30,29,...,0
+                airLights[i].Click += AirLightButton_Click;
+            }
+        }
+
+        private void AirLightButton_Click(object? sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                // 取当前三通道状态（0/1）
+                bool curBlue = rgbdata_air[0] != 0;
+                bool curGreen = rgbdata_air[1] != 0;
+                bool curRed = rgbdata_air[2] != 0;
+
+                using (var dlg = new AirColorDialog(curBlue, curGreen, curRed))
+                {
+                    if (dlg.ShowDialog(this) == DialogResult.OK)
+                    {
+                        // 更新数组（BGR 顺序）
+                        rgbdata_air[0] = dlg.BlueEnabled ? (byte)1 : (byte)0;
+                        rgbdata_air[1] = dlg.RedEnabled ? (byte)1 : (byte)0;
+                        rgbdata_air[2] = dlg.GreenEnabled ? (byte)1 : (byte)0;
+
+                        // 按钮底色预览
+                        btn.BackColor = dlg.SelectedColor;
+
+                        Color SelectedAirColor = Color.FromArgb(
+                            rgbdata_air[1] != 0 ? 255 : 0,
+                            rgbdata_air[2] != 0 ? 255 : 0,
+                            rgbdata_air[0] != 0 ? 255 : 0
+                        );
+                        Button[] airLights = new Button[]
+                        {
+                            airLight1, airLight2, airLight3, airLight4, airLight5, airLight6,
+                            airLight7, airLight8, airLight9, airLight10, airLight11, airLight12
+                        };
+                        for (int i = 0; i < airLights.Length; i++)
+                        {
+                            airLights[i].BackColor = SelectedAirColor;
+                        }
+                        //Chuniio.slider_send_air_leds(rgbdata_air);
+                        airLedNeedUpdate = true;
+                    }
+                }
+            }
+        }
+
         private void AutoConnectButton_Click(object sender, EventArgs e)
         {
             // 调用 DLL 函数，获取串口名称的指针
@@ -124,6 +190,20 @@ namespace ChuniControllerTestToolGUI
             // 可将最终的串口名称显示到界面上，或记录到变量中
             //MessageBox.Show("使用的串口：" + comPort);
             ConnectedPortLabel.Text = comPort;
+
+            // —— 在这里增加 COM 号数值判断 —— 
+            if (!string.IsNullOrEmpty(comPort) &&
+                comPort.StartsWith("COM", StringComparison.OrdinalIgnoreCase) &&
+                int.TryParse(comPort.Substring(3), out int portNum) &&
+                portNum >= 10)
+            {
+                MessageBox.Show(
+                    "当前COM端口大于等于10，可能会引起程序意外错误。\n只是测试程序还没有修复这个问题，不影响连接游戏。",
+                    "警告 - COM端口号过大",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+            }
 
             // 获取 DLL 模块句柄
             IntPtr hModule = GetModuleHandle("chuniio_affine.dll");
@@ -285,6 +365,21 @@ namespace ChuniControllerTestToolGUI
             byte touchedgreen = touchedColor[2];
             Color touchedcolor = Color.FromArgb(touchedred, touchedgreen, touchedblue);
             TouchedColorButton.BackColor = touchedcolor;
+
+            Color SelectedAirColor = Color.FromArgb(
+                rgbdata_air[1] != 0 ? 255 : 0,
+                rgbdata_air[2] != 0 ? 255 : 0,
+                rgbdata_air[0] != 0 ? 255 : 0
+            );
+            Button[] airLights = new Button[]
+            {
+                airLight1, airLight2, airLight3, airLight4, airLight5, airLight6,
+                airLight7, airLight8, airLight9, airLight10, airLight11, airLight12
+            };
+            for (int i = 0; i < airLights.Length; i++)
+            {
+                airLights[i].BackColor = SelectedAirColor;
+            }
         }
 
         private unsafe void ReadDeviceLoop()
@@ -301,10 +396,12 @@ namespace ChuniControllerTestToolGUI
 
             // 发送 LED 数据一次
             Chuniio.slider_send_leds(rgbdata);
+            Chuniio.slider_send_air_leds(rgbdata_air);
+            Thread.Sleep(50);  // 等待50毫秒，防止因为更新速度太快设备反应不过来
             // 初始化 response
             slider_packet_t response = new slider_packet_t();
             Chuniio.package_init(ref response);
-
+            // airLedNeedUpdate = true; // 我真的服了为什么它不会初始化置黑 // 好了现在解决了，原来是被吃了
             while (isDeviceConnected)
             {
                 byte cmd = Chuniio.serial_read_cmd(ref response);
@@ -338,8 +435,14 @@ namespace ChuniControllerTestToolGUI
                     default:
                         break;
                 }
-
                 Chuniio.slider_send_leds(rgbdata);
+                if (airLedNeedUpdate)
+                {
+                    // 天键LED更新太快会影响地键LED的灵敏性
+                    Chuniio.slider_send_air_leds(rgbdata_air);
+                    airLedNeedUpdate = false;
+                    Thread.Sleep(50);  // 等待50毫秒，防止因为更新速度太快设备反应不过来
+                }
             }
         }
 

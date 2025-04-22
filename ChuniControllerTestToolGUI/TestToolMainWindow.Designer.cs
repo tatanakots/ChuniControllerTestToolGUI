@@ -108,18 +108,18 @@
             groupBox2 = new GroupBox();
             airInfo5 = new Button();
             groupBox4 = new GroupBox();
-            button71 = new Button();
-            button72 = new Button();
-            button73 = new Button();
-            button74 = new Button();
-            button75 = new Button();
-            button76 = new Button();
-            button68 = new Button();
-            button69 = new Button();
-            button70 = new Button();
-            button67 = new Button();
-            button66 = new Button();
-            button65 = new Button();
+            airLight2 = new Button();
+            airLight1 = new Button();
+            airLight3 = new Button();
+            airLight5 = new Button();
+            airLight4 = new Button();
+            airLight6 = new Button();
+            airLight8 = new Button();
+            airLight7 = new Button();
+            airLight9 = new Button();
+            airLight11 = new Button();
+            airLight10 = new Button();
+            airLight12 = new Button();
             airInfo6 = new Button();
             airInfo4 = new Button();
             airInfo1 = new Button();
@@ -855,18 +855,18 @@
             // 
             // groupBox4
             // 
-            groupBox4.Controls.Add(button71);
-            groupBox4.Controls.Add(button72);
-            groupBox4.Controls.Add(button73);
-            groupBox4.Controls.Add(button74);
-            groupBox4.Controls.Add(button75);
-            groupBox4.Controls.Add(button76);
-            groupBox4.Controls.Add(button68);
-            groupBox4.Controls.Add(button69);
-            groupBox4.Controls.Add(button70);
-            groupBox4.Controls.Add(button67);
-            groupBox4.Controls.Add(button66);
-            groupBox4.Controls.Add(button65);
+            groupBox4.Controls.Add(airLight2);
+            groupBox4.Controls.Add(airLight1);
+            groupBox4.Controls.Add(airLight3);
+            groupBox4.Controls.Add(airLight5);
+            groupBox4.Controls.Add(airLight4);
+            groupBox4.Controls.Add(airLight6);
+            groupBox4.Controls.Add(airLight8);
+            groupBox4.Controls.Add(airLight7);
+            groupBox4.Controls.Add(airLight9);
+            groupBox4.Controls.Add(airLight11);
+            groupBox4.Controls.Add(airLight10);
+            groupBox4.Controls.Add(airLight12);
             groupBox4.Location = new Point(83, 22);
             groupBox4.Name = "groupBox4";
             groupBox4.Size = new Size(116, 349);
@@ -874,101 +874,101 @@
             groupBox4.TabStop = false;
             groupBox4.Text = "天键灯光 (6*2)";
             // 
-            // button71
+            // airLight2
             // 
-            button71.Location = new Point(24, 76);
-            button71.Name = "button71";
-            button71.Size = new Size(34, 49);
-            button71.TabIndex = 11;
-            button71.UseVisualStyleBackColor = true;
+            airLight2.Location = new Point(24, 76);
+            airLight2.Name = "airLight2";
+            airLight2.Size = new Size(34, 49);
+            airLight2.TabIndex = 11;
+            airLight2.UseVisualStyleBackColor = true;
             // 
-            // button72
+            // airLight1
             // 
-            button72.Location = new Point(24, 21);
-            button72.Name = "button72";
-            button72.Size = new Size(34, 49);
-            button72.TabIndex = 10;
-            button72.UseVisualStyleBackColor = true;
+            airLight1.Location = new Point(24, 21);
+            airLight1.Name = "airLight1";
+            airLight1.Size = new Size(34, 49);
+            airLight1.TabIndex = 10;
+            airLight1.UseVisualStyleBackColor = true;
             // 
-            // button73
+            // airLight3
             // 
-            button73.Location = new Point(24, 131);
-            button73.Name = "button73";
-            button73.Size = new Size(34, 49);
-            button73.TabIndex = 9;
-            button73.UseVisualStyleBackColor = true;
+            airLight3.Location = new Point(24, 131);
+            airLight3.Name = "airLight3";
+            airLight3.Size = new Size(34, 49);
+            airLight3.TabIndex = 9;
+            airLight3.UseVisualStyleBackColor = true;
             // 
-            // button74
+            // airLight5
             // 
-            button74.Location = new Point(24, 241);
-            button74.Name = "button74";
-            button74.Size = new Size(34, 49);
-            button74.TabIndex = 8;
-            button74.UseVisualStyleBackColor = true;
+            airLight5.Location = new Point(24, 241);
+            airLight5.Name = "airLight5";
+            airLight5.Size = new Size(34, 49);
+            airLight5.TabIndex = 8;
+            airLight5.UseVisualStyleBackColor = true;
             // 
-            // button75
+            // airLight4
             // 
-            button75.Location = new Point(24, 186);
-            button75.Name = "button75";
-            button75.Size = new Size(34, 49);
-            button75.TabIndex = 7;
-            button75.UseVisualStyleBackColor = true;
+            airLight4.Location = new Point(24, 186);
+            airLight4.Name = "airLight4";
+            airLight4.Size = new Size(34, 49);
+            airLight4.TabIndex = 7;
+            airLight4.UseVisualStyleBackColor = true;
             // 
-            // button76
+            // airLight6
             // 
-            button76.Location = new Point(24, 296);
-            button76.Name = "button76";
-            button76.Size = new Size(34, 49);
-            button76.TabIndex = 6;
-            button76.UseVisualStyleBackColor = true;
+            airLight6.Location = new Point(24, 296);
+            airLight6.Name = "airLight6";
+            airLight6.Size = new Size(34, 49);
+            airLight6.TabIndex = 6;
+            airLight6.UseVisualStyleBackColor = true;
             // 
-            // button68
+            // airLight8
             // 
-            button68.Location = new Point(64, 76);
-            button68.Name = "button68";
-            button68.Size = new Size(34, 49);
-            button68.TabIndex = 5;
-            button68.UseVisualStyleBackColor = true;
+            airLight8.Location = new Point(64, 76);
+            airLight8.Name = "airLight8";
+            airLight8.Size = new Size(34, 49);
+            airLight8.TabIndex = 5;
+            airLight8.UseVisualStyleBackColor = true;
             // 
-            // button69
+            // airLight7
             // 
-            button69.Location = new Point(64, 21);
-            button69.Name = "button69";
-            button69.Size = new Size(34, 49);
-            button69.TabIndex = 4;
-            button69.UseVisualStyleBackColor = true;
+            airLight7.Location = new Point(64, 21);
+            airLight7.Name = "airLight7";
+            airLight7.Size = new Size(34, 49);
+            airLight7.TabIndex = 4;
+            airLight7.UseVisualStyleBackColor = true;
             // 
-            // button70
+            // airLight9
             // 
-            button70.Location = new Point(64, 131);
-            button70.Name = "button70";
-            button70.Size = new Size(34, 49);
-            button70.TabIndex = 3;
-            button70.UseVisualStyleBackColor = true;
+            airLight9.Location = new Point(64, 131);
+            airLight9.Name = "airLight9";
+            airLight9.Size = new Size(34, 49);
+            airLight9.TabIndex = 3;
+            airLight9.UseVisualStyleBackColor = true;
             // 
-            // button67
+            // airLight11
             // 
-            button67.Location = new Point(64, 241);
-            button67.Name = "button67";
-            button67.Size = new Size(34, 49);
-            button67.TabIndex = 2;
-            button67.UseVisualStyleBackColor = true;
+            airLight11.Location = new Point(64, 241);
+            airLight11.Name = "airLight11";
+            airLight11.Size = new Size(34, 49);
+            airLight11.TabIndex = 2;
+            airLight11.UseVisualStyleBackColor = true;
             // 
-            // button66
+            // airLight10
             // 
-            button66.Location = new Point(64, 186);
-            button66.Name = "button66";
-            button66.Size = new Size(34, 49);
-            button66.TabIndex = 1;
-            button66.UseVisualStyleBackColor = true;
+            airLight10.Location = new Point(64, 186);
+            airLight10.Name = "airLight10";
+            airLight10.Size = new Size(34, 49);
+            airLight10.TabIndex = 1;
+            airLight10.UseVisualStyleBackColor = true;
             // 
-            // button65
+            // airLight12
             // 
-            button65.Location = new Point(64, 296);
-            button65.Name = "button65";
-            button65.Size = new Size(34, 49);
-            button65.TabIndex = 0;
-            button65.UseVisualStyleBackColor = true;
+            airLight12.Location = new Point(64, 296);
+            airLight12.Name = "airLight12";
+            airLight12.Size = new Size(34, 49);
+            airLight12.TabIndex = 0;
+            airLight12.UseVisualStyleBackColor = true;
             // 
             // airInfo6
             // 
@@ -1023,11 +1023,11 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(940, 134);
+            label3.Location = new Point(892, 134);
             label3.Name = "label3";
-            label3.Size = new Size(212, 17);
+            label3.Size = new Size(253, 17);
             label3.TabIndex = 7;
-            label3.Text = "暂未支持天键灯光读写功能，敬请期待";
+            label3.Text = "受限于chuniio，天键灯光只能全部一起控制。";
             // 
             // linkLabel1
             // 
@@ -1147,19 +1147,19 @@
         private ToolTip toolTip1;
         private Button ApplyThresButton;
         private GroupBox groupBox4;
-        private Button button65;
+        private Button airLight12;
         private Button airInfo5;
-        private Button button71;
-        private Button button72;
-        private Button button73;
-        private Button button74;
-        private Button button75;
-        private Button button76;
-        private Button button68;
-        private Button button69;
-        private Button button70;
-        private Button button67;
-        private Button button66;
+        private Button airLight2;
+        private Button airLight1;
+        private Button airLight3;
+        private Button airLight5;
+        private Button airLight4;
+        private Button airLight6;
+        private Button airLight8;
+        private Button airLight7;
+        private Button airLight9;
+        private Button airLight11;
+        private Button airLight10;
         private Button airInfo6;
         private Button airInfo4;
         private Button airInfo1;

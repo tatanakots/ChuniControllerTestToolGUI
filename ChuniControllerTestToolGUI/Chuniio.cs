@@ -149,6 +149,10 @@ namespace ChuniControllerTestToolGUI
         [DllImport("chuniio_affine.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void slider_send_leds(byte[] rgb);
 
+        // 发送天键IED数据 void slider_send_air_leds(const uint8_t *rgb);
+        [DllImport("chuniio_affine.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void slider_send_air_leds(byte[] rgb);
+
         // 17. void slider_start_air_scan();
         [DllImport("chuniio_affine.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void slider_start_air_scan();
