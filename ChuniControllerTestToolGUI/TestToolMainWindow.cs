@@ -560,6 +560,11 @@ namespace ChuniControllerTestToolGUI
                     rgbdatabackup = Enumerable.Repeat(new byte[] { blue, red, green }, 31)
                              .SelectMany(x => x)
                              .ToArray();
+                    if (!isDeviceConnected)
+                    {
+                        UpdateUIDisplay(null, 0);
+                    }
+                    
                 }
             }
         }
