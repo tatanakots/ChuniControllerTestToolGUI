@@ -172,8 +172,15 @@ namespace ChuniControllerTestToolGUI
             // 调用 DLL 函数，获取串口名称的指针
             IntPtr ptr = Chuniio.GetSerialPortByVidPid(DEVICE_VID, DEVICE_PID);
             // 将指针转换为 ANSI 字符串
-            string? portString = Marshal.PtrToStringAnsi(ptr);
-
+            string? portString = Marshal.PtrToStringAnsi(ptr) ?? string.Empty;
+            // 构造一个长度恰好为 6 的字符数组：
+            // 如果原串长>=6，就取前6；否则不足，用 '\0' 填满
+            int[] raw = new int[13];
+            for (int i = 0; i < 13; i++)
+            {
+                raw[i] = i < portString.Length ? portString[i] : 0;
+                Console.Write(raw[i]);
+            }
             // 假设返回的串口名称至少6个字符
             string? comPort = portString;
 
@@ -192,18 +199,21 @@ namespace ChuniControllerTestToolGUI
             ConnectedPortLabel.Text = comPort;
 
             // —— 在这里增加 COM 号数值判断 —— 
-            if (!string.IsNullOrEmpty(comPort) &&
-                comPort.StartsWith("COM", StringComparison.OrdinalIgnoreCase) &&
-                int.TryParse(comPort.Substring(3), out int portNum) &&
-                portNum >= 10)
-            {
-                MessageBox.Show(
-                    "当前COM端口大于等于10，可能会引起程序意外错误。\n只是测试程序还没有修复这个问题，不影响连接游戏。",
-                    "警告 - COM端口号过大",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
-                );
-            }
+            //if (!string.IsNullOrEmpty(comPort) &&
+            //    comPort.StartsWith("COM", StringComparison.OrdinalIgnoreCase) &&
+            //    int.TryParse(comPort.Substring(3), out int portNum) &&
+            //    portNum >= 10)
+            //{
+            //    //MessageBox.Show(
+            //    //    "当前COM端口大于等于10，可能会引起程序意外错误。\n只是测试程序还没有修复这个问题，不影响连接游戏。",
+            //    //    "警告 - COM端口号过大",
+            //    //    MessageBoxButtons.OK,
+            //    //    MessageBoxIcon.Warning
+            //    //);
+            //    comPort = "\\\\.\\"+ comPort;
+            //}
+
+            
 
             // 获取 DLL 模块句柄
             IntPtr hModule = GetModuleHandle("chuniio_affine.dll");
@@ -223,14 +233,51 @@ namespace ChuniControllerTestToolGUI
 
             // 将 comPortValue 转换为 ANSI 字节数组
             // 根据原代码，C 中 comPort 定义为 char comPort[13]，但在 open_port() 调用中只复制前6个字节
-            byte[] comPortBytes = new byte[6];
+            byte[] comPortBytes = new byte[13];
             byte[] tempBytes = Encoding.ASCII.GetBytes(comPort);
-            int copyLen = Math.Min(tempBytes.Length, 6);
-            Array.Copy(tempBytes, comPortBytes, copyLen);
+            Array.Copy(tempBytes, comPortBytes, tempBytes.Length);
             // 剩余字节如果不足6个则保持为0
 
             // 将字节数组写入 DLL 内部的全局变量 comPort 的内存区域
             Marshal.Copy(comPortBytes, 0, comPortAddr, 6);
+
+            if (raw[0] == 0)
+            {
+                // comPort[0] == 0  ==> 默认 COM1
+                comPort = "COM1";
+                tempBytes = Encoding.ASCII.GetBytes(comPort);
+                Array.Copy(tempBytes, comPortBytes, tempBytes.Length);
+                Marshal.Copy(comPortBytes, 0, comPortAddr, 4);
+            }
+            else if (raw[4] == 0)
+            {
+                // comPort[4] == 0 且 comPort[0] != 0  ==> 单字符端口，形如 "COMx"
+                // raw[3] 是数字字符
+                //int portNum = raw[3] - '0';
+                //comPort = $"COM{portNum}";
+            }
+            else if (raw[5] == 0)
+            {
+                // comPort[5] == 0 且前面非零 ==> 双字符端口，形如 "COMxx"
+                int digit1 = raw[3] - '0';
+                int digit2 = raw[4] - '0';
+                int portNum = digit1 * 10 + digit2;
+                comPort = $"\\\\.\\COM{portNum}";
+                tempBytes = Encoding.ASCII.GetBytes(comPort);
+                Array.Copy(tempBytes, comPortBytes, tempBytes.Length);
+                Marshal.Copy(comPortBytes, 0, comPortAddr, 10);
+            }
+            else
+            {
+                // 三字符端口，形如 "COMxxx"
+                int portNum = (raw[3] - '0') * 100
+                            + (raw[4] - '0') * 10
+                            + (raw[5] - '0');
+                comPort = $"\\\\.\\COM{portNum}";
+                tempBytes = Encoding.ASCII.GetBytes(comPort);
+                Array.Copy(tempBytes, comPortBytes, tempBytes.Length);
+                Marshal.Copy(comPortBytes, 0, comPortAddr, 11);
+            }
 
             // 调用 open_port() 打开串口设备
             bool openSuccess = Chuniio.open_port();
